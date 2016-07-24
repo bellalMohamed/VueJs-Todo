@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Todo VueJs</title>
+</head>
+<body>
+	<div class="app">
+		<ul>
+			<li v-for="item in items">{{ item.name }} <a href="#" v-on:click="removeItem(item)">Remove</a></li>
+		</ul>
+		<input type="text" v-model="item">
+		<input type="submit" v-on:click="addItem">
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js"></script>
+	<script>
+		new Vue({
+			el: '.app',
+			data: {
+				item: '',
+				items: []
+			},
+			methods: {
+				addItem: function () {
+					var item = {
+						id: Date.now(),
+						name: this.item
+					};
+					this.items.push(item);
+					localStorage.setItem('items', JSON.stringify(this.items))
+					this.item = '';
+				},
+				removeItem: function (item){
+					var newItems = this.items.filter(function (i){
+						return item.id !== i.id;
+					});
+					this.items = newItems;
+					localStorage.setItem('items', JSON.stringify(this.items));
+				}
+			},
+			ready: function (){
+				this.items = JSON.parse(localStorage.getItem('items')) || [];
+			}
+		});
+	</script>
+</body>
+</html>
